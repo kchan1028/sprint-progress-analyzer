@@ -29,3 +29,39 @@ describe('CSV import feedback', () => {
     expect(await screen.findByText('Sprint end date must be after the start date.')).toBeInTheDocument();
   });
 });
+
+describe('large import warning', () => {
+  function chooseFile(csv: string) {
+    const file = new File([csv], 'big.csv', { type: 'text/csv' });
+    Object.defineProperty(file, 'text', { value: async () => csv });
+    fireEvent.change(screen.getByLabelText('CSV file'), { target: { files: [file] } });
+    fireEvent.click(screen.getByRole('button', { name: 'Import "big.csv"' }));
+  }
+
+  const bigCsv = 'Issue key,Status\n' + Array.from({ length: 1001 }, (_, i) => `BIG-${i},Done`).join('\n');
+
+  it('asks before importing more than the row threshold, and imports on confirm', async () => {
+    render(<ImportPanel defaultOpen />);
+    chooseFile(bigCsv);
+    expect(await screen.findByText(/This file has 1,001 rows/)).toBeInTheDocument();
+    expect(screen.queryByText(/Imported successfully/)).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Import anyway' }));
+    expect(await screen.findByText(/Imported successfully/)).toBeInTheDocument();
+    expect(screen.queryByText(/This file has 1,001 rows/)).not.toBeInTheDocument();
+  });
+
+  it('does not import when cancelled', async () => {
+    render(<ImportPanel defaultOpen />);
+    chooseFile(bigCsv);
+    fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }));
+    expect(screen.queryByText(/This file has/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Imported successfully/)).not.toBeInTheDocument();
+  });
+
+  it('imports a file at the threshold without asking', async () => {
+    render(<ImportPanel defaultOpen />);
+    chooseFile('Issue key,Status\n' + Array.from({ length: 1000 }, (_, i) => `OK-${i},Done`).join('\n'));
+    expect(await screen.findByText(/Imported successfully/)).toBeInTheDocument();
+  });
+});
