@@ -19,7 +19,7 @@ For a reproducible import, select [examples/sprint.csv](examples/sprint.csv), se
 
 ![Dark-theme dashboard with fictional sprint data: 80 points originally committed, 94 in current scope, and 53 completed.](docs/images/dashboard-demo.png)
 
-Captured from the local running app on November 13, 2026, using only the built-in synthetic data. Browser chrome and margins are cropped; the dashboard content is unchanged. Demo dates roll forward when you open the app. A hosted synthetic demo is being prepared; public access is pending approval.
+Captured from the local running app on November 13, 2026, using only the built-in synthetic data. Browser chrome and margins are cropped; the dashboard content is unchanged. Demo dates roll forward when you open the app. A hosted synthetic demo is available for private owner review; no public demo is advertised. Use the local setup to explore the app.
 
 
 For a plain-English walkthrough, read [Reading your sprint dashboard](docs/user-guide.md): importing a file, understanding the numbers, and turning risk signals into team conversations.
