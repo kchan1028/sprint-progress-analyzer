@@ -3,8 +3,10 @@ import AxeBuilder from '@axe-core/playwright';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
 
-async function checkAccessibility(page: Page) {
-  const result = await new AxeBuilder({ page }).analyze();
+async function checkAccessibility(page: Page, exclude?: string) {
+  const builder = new AxeBuilder({ page });
+  if (exclude) builder.exclude(exclude);
+  const result = await builder.analyze();
   expect(result.violations.map(({ id, nodes }) => ({
     id, nodes: nodes.map(({ target, any }) => ({ target, issue: any.map((check) => check.message) })),
   }))).toEqual([]);
@@ -29,9 +31,11 @@ test('imports a CSV, corrects a status, preserves mapping on reload, and resets'
   await expect(page.getByText('Original Commitment', { exact: true }).locator('..')).toContainText('Unavailable');
   await expect(page.getByRole('columnheader', { name: 'Days In Status (estimated)' })).toBeVisible();
   if (browserName === 'firefox') {
-    // Headless Firefox in CI crashes the page while axe scans it after this re-import (also in axe's
-    // legacy mode). The import flow itself passes; tracked in docs/risk-register.md (R10).
-    test.info().annotations.push({ type: 'skipped-check', description: 'axe scan after re-import (Firefox page crash)' });
+    // Playwright's Firefox crashes the page if axe scans the data-confidence section (a <section> with
+    // aria-labelledby) after any change to a <select>. Chromium and WebKit still scan it. See R10 in
+    // docs/risk-register.md.
+    test.info().annotations.push({ type: 'excluded-region', description: '.data-confidence (Firefox page crash under axe)' });
+    await checkAccessibility(page, '.data-confidence');
   } else {
     await checkAccessibility(page);
   }
