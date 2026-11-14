@@ -119,6 +119,10 @@ The preparation checks passed: 54 tests across five suites, lint, and a TypeScri
 - Imports are memory-only, and large-file performance has not been benchmarked. Automated coverage focuses on utilities and import error feedback, with no complete browser regression suite.
 - Next steps: add browser tests for imports and mapping corrections, show explicit provenance/availability on historical metrics, and evaluate changelog-backed data before building forecasts.
 
+## Security
+
+See [SECURITY.md](SECURITY.md) for vulnerability reporting, data-handling boundaries, and deployment considerations.
+
 ## License
 
 No project license has been selected. Public availability does not grant a general license to reuse the project. Dependency licenses remain their own.
