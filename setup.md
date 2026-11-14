@@ -2,6 +2,22 @@
 
 You can run the app locally without a Jira account, API key, database, or environment file. It starts with fictional sprint data so you can explore it immediately.
 
+## Setup at a glance
+
+```mermaid
+flowchart TD
+  Tools[Install Git, Node.js, and npm] --> Clone[Clone the repository]
+  Clone --> Install[Run npm ci]
+  Install --> Dev[Run npm run dev]
+  Dev --> Browser[Open the printed local URL]
+  Install --> Validate[Run tests and lint]
+  Validate --> Build[Run npm run build]
+  Build --> Preview[Run npm run preview]
+  Preview --> Inspect[Inspect the production build locally]
+```
+
+Use the development path while editing. Use the validation and preview path to check the built app before sharing it. Neither path requires a Jira account or environment file.
+
 ## 1. Check your tools
 
 Install Git, Node.js 22.12 or newer, and npm. npm comes with Node.js. Check that they are available in your terminal:
