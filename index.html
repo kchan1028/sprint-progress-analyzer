@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Sprint Progress Analyzer — Jira Sprint Health & Delivery Risk Analysis</title>
+    <meta
+      name="description"
+      content="Analyze Jira sprint progress, scope changes, workflow bottlenecks, code review, testing, blocked work, and delivery risk signals in one engineering leadership dashboard."
+    />
+    <meta
+      name="keywords"
+      content="Jira sprint analysis, sprint progress, sprint health, engineering metrics, sprint risk, software delivery metrics, Jira sprint dashboard, engineering leadership dashboard, Agile sprint metrics"
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Sprint Progress Analyzer" />
+    <meta property="og:title" content="Sprint Progress Analyzer — Jira Sprint Health & Delivery Risk Analysis" />
+    <meta
+      property="og:description"
+      content="Analyze Jira sprint progress, scope changes, workflow bottlenecks, code review, testing, blocked work, and delivery risk signals in one engineering leadership dashboard."
+    />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Sprint Progress Analyzer — Jira Sprint Health & Delivery Risk Analysis" />
+    <meta
+      name="twitter:description"
+      content="Analyze Jira sprint progress, scope changes, workflow bottlenecks, code review, testing, blocked work, and delivery risk signals in one engineering leadership dashboard."
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Sprint Progress Analyzer",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "description": "Sprint Progress Analyzer turns Jira sprint data into a clear view of delivery progress, scope changes, workflow bottlenecks, and sprint risk for engineering leaders and teams."
+      }
+    </script>
+
+    <script>
+      (function () {
+        try {
+          var KEY = 'sprint-analyzer-theme';
+          var stored = localStorage.getItem(KEY);
+          var theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+          document.documentElement.setAttribute('data-theme', theme);
+          document.documentElement.style.colorScheme = theme;
+        } catch (e) {}
+      })();
+    </script>
+      <!-- Not a search landing page while usefullittletools.app is rebuilt (readiness audit, 2026-09-26). -->
+    <meta name="robots" content="noindex, follow" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+Issue key,Summary,Status,Assignee,Story Points,Created,Updated
+DEMO-1,Add empty state,Done,Example Developer,3,2026-11-02,2026-11-05
+DEMO-2,Review import validation,In Review,Example Reviewer,5,2026-11-02,2026-11-09
+DEMO-3,Resolve test environment,Blocked,,2,2026-11-03,2026-11-06
+DEMO-4,Explore export format,Discovery,Example Developer,,2026-11-04,2026-11-10
