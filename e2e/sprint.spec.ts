@@ -4,7 +4,10 @@ import path from 'node:path';
 import type { Page } from '@playwright/test';
 
 async function checkAccessibility(page: Page) {
-  const result = await new AxeBuilder({ page }).analyze();
+  const builder = new AxeBuilder({ page });
+  // Diagnostic: Firefox crashed in axe's cross-frame run after a re-import.
+  if (page.context().browser()?.browserType().name() === 'firefox') builder.setLegacyMode(true);
+  const result = await builder.analyze();
   expect(result.violations.map(({ id, nodes }) => ({
     id, nodes: nodes.map(({ target, any }) => ({ target, issue: any.map((check) => check.message) })),
   }))).toEqual([]);
