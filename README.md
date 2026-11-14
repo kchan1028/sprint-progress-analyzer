@@ -126,7 +126,7 @@ The existing `vercel.json` rewrites SPA routes to `index.html`. Other hosts need
 
 ## Validation
 
-[GitHub Actions CI](https://github.com/kchan1028/sprint-progress-analyzer/actions/workflows/ci.yml) runs a clean npm install, tests, lint, and the production build on pull requests and pushes to `main`, using Node.js 22. The workflow uses read-only repository permissions and pinned action commits. Branch protection is not configured by this change.
+[GitHub Actions CI](https://github.com/kchan1028/sprint-progress-analyzer/actions/workflows/ci.yml) runs a clean npm install, unit tests, lint, the TypeScript check and production build, and the Playwright browser and accessibility checks on pull requests and pushes to `main`, using Node.js 22. On pull requests, a dependency review job fails the PR if it adds a dependency with a known high or critical vulnerability. A newer push to a PR cancels the older run. The workflow uses read-only repository permissions, pinned action commits and no secrets. [Dependabot](.github/dependabot.yml) opens monthly update PRs for npm packages and workflow actions. The default branch requires a pull request; the checks are not yet required status checks.
 
 
 The preparation checks passed: 57 tests across seven suites, lint, and a TypeScript/production build. Tests cover calculation edge cases, CSV parsing, workflow grouping, persisted mapping behavior, import error feedback, and data provenance across imports and resets. An additional 18 Playwright checks cover the complete CSV import/mapping/reset journey, invalid imports, representative keyboard behavior, and axe/layout checks at desktop and emulated phone widths. See [docs/publication-review.md](docs/publication-review.md) for the publication review scope.
