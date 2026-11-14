@@ -150,4 +150,4 @@ See [SECURITY.md](SECURITY.md) for vulnerability reporting, data-handling bounda
 
 ## License
 
-No project license has been selected. Public availability does not grant a general license to reuse the project. Dependency licenses remain their own.
+Released under the [MIT License](LICENSE). Dependency licenses remain their own. The fictional demo data and example CSV are covered by the same license.
