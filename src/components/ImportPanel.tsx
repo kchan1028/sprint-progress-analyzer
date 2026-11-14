@@ -231,13 +231,13 @@ export function ImportPanel({ defaultOpen = false }: { defaultOpen?: boolean }) 
         </div>
 
         {status === 'success' && (
-          <div className="signal signal--info">
+          <div className="signal signal--info" role="status">
             <span className="signal__icon">✓</span>
             <span>Imported successfully.{warnings && warnings.length > 0 ? ' See notes below.' : ''}</span>
           </div>
         )}
         {status === 'error' && errorMessage && (
-          <div className="signal signal--warning">
+          <div className="signal signal--warning" role="alert">
             <span className="signal__icon">!</span>
             <span>{errorMessage}</span>
           </div>
@@ -260,6 +260,7 @@ export function ImportPanel({ defaultOpen = false }: { defaultOpen?: boolean }) 
               <div className="import-panel__status-map-row" key={raw}>
                 <span>{raw}</span>
                 <select
+                  aria-label={`Map status ${raw}`}
                   value={statusMap[raw] ?? 'To Do'}
                   onChange={(e) =>
                     setStatusMap((prev) => ({ ...prev, [raw]: e.target.value as IssueStatus }))
@@ -297,6 +298,7 @@ export function ImportPanel({ defaultOpen = false }: { defaultOpen?: boolean }) 
                   <span>{entry.rawStatus}</span>
                   <div className="import-panel__status-map-row-actions">
                     <select
+                      aria-label={`Saved mapping for ${entry.rawStatus}`}
                       value={entry.status}
                       onChange={(e) => handleUpdateSavedMapping(entry, e.target.value as IssueStatus)}
                     >

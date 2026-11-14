@@ -91,9 +91,11 @@ Run these from the project folder:
 npm run test
 npm run lint
 npm run build
+npx playwright install chromium
+npm run test:e2e
 ```
 
-Tests check calculations, CSV parsing, workflow grouping, status mappings, import error feedback, and demo/CSV provenance. GitHub Actions runs the same checks on pull requests and pushes to main. Lint checks source code, and the build runs TypeScript checks before creating the production files in `dist/`.
+Tests check calculations, CSV parsing, workflow grouping, status mappings, import error feedback, and demo/CSV provenance. GitHub Actions runs these checks plus desktop/mobile Chromium flows and accessibility scans on pull requests and pushes to main. Browser tests start an isolated production preview on port 4175; leave that port free. Lint checks source code, and the build runs TypeScript checks before creating the production files in `dist/`.
 
 To inspect that build locally:
 
@@ -119,3 +121,5 @@ Open the URL printed in the terminal. Preview serves the built files; rerun `npm
 For static hosting, publish the output of `npm run build` and configure requests for `/analyze` and `/dashboard` to fall back to `index.html`. The repository includes a `vercel.json` fallback configuration. Existing noindex metadata is preserved.
 
 The setup workflow follows the project scripts and [Vite's getting-started guide](https://vite.dev/guide/). See [Vite's CLI documentation](https://vite.dev/guide/cli.html) for the distinction between development, build, and preview.
+
+For reproducible parser and browser measurements, see [performance.md](docs/performance.md). `npm run build:demo` creates a production build with the optional tracking and advertising identifiers explicitly cleared, even if local environment files contain values.

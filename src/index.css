@@ -13,9 +13,9 @@
 
   --color-text: #14181f;
   --color-text-secondary: #4b5565;
-  --color-text-tertiary: #8991a0;
+  --color-text-tertiary: #596474;
 
-  --color-accent: #2f6feb;
+  --color-accent: #245bd0;
   --color-accent-bg: #eaf1ff;
   --color-accent-contrast: #ffffff;
 
@@ -45,7 +45,7 @@
   /* Fixed-hue chips (solid background + white text) - deliberately not
      theme-adaptive, same treatment as a small brand-colored label. */
   --chip-danger-bg: #d33d30;
-  --chip-warning-bg: #b6790c;
+  --chip-warning-bg: #805000;
   --chip-neutral-bg: #667085;
 
   --status-todo-bg: #eef0f3;
@@ -88,9 +88,9 @@
 
   --color-text: #edeff3;
   --color-text-secondary: #a7afbe;
-  --color-text-tertiary: #76808f;
+  --color-text-tertiary: #a0aaba;
 
-  --color-accent: #5b8def;
+  --color-accent: #90b5ff;
   --color-accent-bg: rgba(91, 141, 239, 0.16);
   --color-accent-contrast: #0b1220;
 
@@ -102,7 +102,7 @@
   --color-warning-bg: rgba(240, 180, 41, 0.14);
   --color-warning-border: rgba(240, 180, 41, 0.32);
 
-  --color-danger: #f2685b;
+  --color-danger: #ffb1a9;
   --color-danger-bg: rgba(242, 104, 91, 0.16);
   --color-danger-border: rgba(242, 104, 91, 0.35);
 
@@ -120,7 +120,7 @@
   --status-todo-bg: rgba(255, 255, 255, 0.08);
   --status-todo-text: #c3c9d3;
   --status-inprogress-bg: rgba(91, 141, 239, 0.18);
-  --status-inprogress-text: #8aa8f5;
+  --status-inprogress-text: #b2c8ff;
   --status-review-bg: rgba(190, 130, 255, 0.18);
   --status-review-text: #caa0ff;
 
@@ -566,7 +566,6 @@ select {
 .pipeline-stage--deleted {
   border-top-style: dashed;
   border-top-color: var(--color-border-strong);
-  opacity: 0.75;
 }
 
 /* ==========================================================================
@@ -1763,4 +1762,33 @@ select {
 .progress-metric__value--unavailable {
   font-size: 1rem;
   color: var(--color-text-secondary);
+}
+
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  transform: translateY(-160%);
+  padding: 12px 16px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  z-index: 10;
+}
+.skip-link:focus { transform: translateY(0); }
+.table-scroll { overflow-x: auto; }
+.table-scroll .data-table { display: table; min-width: 640px; }
+.table-toolbar { flex-wrap: wrap; }
+@media (max-width: 600px) {
+  .app-header { flex-direction: column; align-items: flex-start; }
+  .app-header__nav { flex-wrap: wrap; }
+}
+
+.sprint-header__name { margin: 0; }
+.import-panel__field { min-width: 0; }
+.import-panel__field input { min-width: 0; max-width: 100%; }
+.import-panel__actions { flex-wrap: wrap; }
+.import-panel__actions button { max-width: 100%; overflow-wrap: anywhere; }
+.import-panel__status-map-row > span { overflow-wrap: anywhere; min-width: 0; }
+@media (max-width: 600px) {
+  .import-panel__fields { grid-template-columns: minmax(0, 1fr); }
 }

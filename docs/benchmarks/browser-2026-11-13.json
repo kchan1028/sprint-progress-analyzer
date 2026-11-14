@@ -1,0 +1,58 @@
+{
+  "browser": "159.0.8154.6",
+  "cpu": "Apple M3 Max",
+  "viewport": "1280x900",
+  "results": [
+    {
+      "rows": 100,
+      "samples": [
+        {
+          "elapsedMs": 868,
+          "maxFrameGapMs": 17
+        },
+        {
+          "elapsedMs": 855,
+          "maxFrameGapMs": 17
+        },
+        {
+          "elapsedMs": 874,
+          "maxFrameGapMs": 17
+        }
+      ]
+    },
+    {
+      "rows": 1000,
+      "samples": [
+        {
+          "elapsedMs": 889,
+          "maxFrameGapMs": 117
+        },
+        {
+          "elapsedMs": 901,
+          "maxFrameGapMs": 117
+        },
+        {
+          "elapsedMs": 901,
+          "maxFrameGapMs": 100
+        }
+      ]
+    },
+    {
+      "rows": 5000,
+      "samples": [
+        {
+          "elapsedMs": 1411,
+          "maxFrameGapMs": 767
+        },
+        {
+          "elapsedMs": 1461,
+          "maxFrameGapMs": 800
+        },
+        {
+          "elapsedMs": 1423,
+          "maxFrameGapMs": 783
+        }
+      ]
+    }
+  ]
+}
