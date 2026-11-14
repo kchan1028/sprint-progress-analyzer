@@ -33,6 +33,7 @@ What `parseJiraCsv.ts` and `ImportPanel.tsx` do today:
 | No `Status` column | Imports; warning that every issue defaults to To Do |
 | Row without an issue key | Row skipped with a warning naming the row number |
 | Unknown status name | Defaults to To Do; one warning listing the names, and a mapping form whose choices are saved in `localStorage` |
+| Status resolved by a saved mapping | Mapped as saved; after a successful import the panel lists each saved mapping applied, with its issue count and a link to edit it |
 | Empty story points | Imported as unestimated (`null`) and counted by the unestimated signal |
 | Non-numeric story points | Imported as unestimated (`null`); one warning with the count |
 | Repeated issue key | Later rows dropped and the first row wins; one warning with the count of dropped rows |
@@ -59,7 +60,7 @@ most common reason numbers look wrong.
 - **Date parsing** relies on the browser's `Date`; non-ISO formats can parse differently or not at all.
 - **No hard size limit.** Large files only get a confirmation step; after Import anyway, every row still renders
   and the page can stall ([performance](../performance.md)).
-- **Saved mappings** apply to every import in that browser, and can be wrong for another team's workflow.
+- **Saved mappings** apply to every import in that browser, and can be wrong for another team's workflow. Each import lists the ones it used, but nothing stops a wrong one from applying.
 
 ## When to revisit
 

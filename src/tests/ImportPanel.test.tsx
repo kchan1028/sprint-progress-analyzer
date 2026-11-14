@@ -65,3 +65,25 @@ describe('large import warning', () => {
     expect(await screen.findByText(/Imported successfully/)).toBeInTheDocument();
   });
 });
+
+describe('applied saved mappings', () => {
+  afterEach(() => localStorage.clear());
+
+  it('lists the saved mappings an import used', async () => {
+    localStorage.setItem(
+      'sprint-analyzer-status-mappings',
+      JSON.stringify({ 'dev review': { rawStatus: 'Dev Review', status: 'In Review' } }),
+    );
+    render(<ImportPanel defaultOpen />);
+    const csv = 'Issue key,Status\nMAP-1,Dev Review\nMAP-2,Dev Review\nMAP-3,Done';
+    const file = new File([csv], 'mapped.csv', { type: 'text/csv' });
+    Object.defineProperty(file, 'text', { value: async () => csv });
+    fireEvent.change(screen.getByLabelText('CSV file'), { target: { files: [file] } });
+    fireEvent.click(screen.getByRole('button', { name: 'Import "mapped.csv"' }));
+
+    const list = await screen.findByRole('list', { name: 'Saved mappings applied' });
+    expect(list).toHaveTextContent('"Dev Review" counted as In Review (2 issues)');
+    fireEvent.click(screen.getByRole('button', { name: 'Edit saved mappings' }));
+    expect(screen.getByLabelText('Saved mapping for Dev Review')).toHaveValue('In Review');
+  });
+});

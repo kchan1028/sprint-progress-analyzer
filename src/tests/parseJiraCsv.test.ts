@@ -137,4 +137,24 @@ describe('parseJiraCsv', () => {
     const { warnings } = parseJiraCsv('Issue key,Status\nJIRA-1,Done', SPRINT_META);
     expect(warnings).toEqual([]);
   });
+
+  it('reports which supplied mappings were applied, with issue counts', () => {
+    const csv = [
+      'Issue key,Status',
+      'JIRA-1,Dev Review',
+      'JIRA-2,dev review',
+      'JIRA-3,Alpha Deployed',
+      'JIRA-4,Done',
+    ].join('\n');
+    const { issues, appliedMappings } = parseJiraCsv(csv, SPRINT_META, {
+      'Dev Review': 'In Review',
+      'Never Seen': 'Blocked',
+    });
+    expect(issues.map((issue) => issue.status)).toEqual(['In Review', 'In Review', 'To Do', 'Done']);
+    expect(appliedMappings).toEqual([{ rawStatus: 'Dev Review', status: 'In Review', issueCount: 2 }]);
+  });
+
+  it('reports no applied mappings when none are supplied', () => {
+    expect(parseJiraCsv('Issue key,Status\nJIRA-1,Done', SPRINT_META).appliedMappings).toEqual([]);
+  });
 });
