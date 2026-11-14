@@ -9,7 +9,11 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "benchmark": "node --import tsx scripts/benchmark.ts",
+    "build:demo": "node scripts/build-demo.mjs",
+    "benchmark:browser": "node --import tsx scripts/benchmark-browser.ts"
   },
   "dependencies": {
     "react": "^19.2.8",
@@ -17,6 +21,8 @@
     "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.65.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.3",
     "@types/node": "^24.13.3",
@@ -26,6 +32,7 @@
     "@vitest/ui": "^4.1.12",
     "jsdom": "^29.1.1",
     "oxlint": "^1.81.0",
+    "tsx": "^4.23.15",
     "typescript": "~6.0.2",
     "vite": "^8.3.8",
     "vitest": "^4.1.12"

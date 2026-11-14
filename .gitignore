@@ -34,3 +34,7 @@ dist-ssr
 !examples/*.csv
 *.pem
 *.key
+
+# Browser test artifacts
+playwright-report/
+test-results/

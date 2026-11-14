@@ -9,6 +9,7 @@ import { ThemeToggle } from './ThemeToggle';
 export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="app-shell">
+      <a className="skip-link" href="#main-content">Skip to dashboard content</a>
       <header className="app-header">
         <Link to="/" className="app-header__brand">
           <div className="app-header__title">Sprint Progress Analyzer</div>
@@ -25,7 +26,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </nav>
       </header>
 
-      {children}
+      <main id="main-content" tabIndex={-1}>{children}</main>
 
       <footer className="app-shell__footer">
         Your Jira data stays in your browser - we don't store your sprint data on our servers.

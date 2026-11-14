@@ -1,0 +1,33 @@
+{
+  "runtime": "v20.19.6",
+  "platform": "darwin",
+  "arch": "arm64",
+  "cpu": "Apple M3 Max",
+  "samples": 7,
+  "results": [
+    {
+      "rows": 100,
+      "bytes": 8283,
+      "medianMs": 0.45,
+      "maxMs": 0.57
+    },
+    {
+      "rows": 1000,
+      "bytes": 84333,
+      "medianMs": 2.35,
+      "maxMs": 2.64
+    },
+    {
+      "rows": 10000,
+      "bytes": 862833,
+      "medianMs": 28.78,
+      "maxMs": 34.43
+    },
+    {
+      "rows": 50000,
+      "bytes": 4402833,
+      "medianMs": 166.13,
+      "maxMs": 204.28
+    }
+  ]
+}

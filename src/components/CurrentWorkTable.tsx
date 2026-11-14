@@ -54,6 +54,7 @@ export function CurrentWorkTable({ rows, estimatedHistory = false }: { rows: Cur
           <button
             key={key}
             type="button"
+            aria-pressed={filter === key}
             className={`filter-button ${filter === key ? 'filter-button--active' : ''}`}
             onClick={() => setFilter(key)}
           >
@@ -65,7 +66,8 @@ export function CurrentWorkTable({ rows, estimatedHistory = false }: { rows: Cur
       {visible.length === 0 ? (
         <div className="signals-empty">No issues match this filter.</div>
       ) : (
-        <table className="data-table">
+        <div className="table-scroll" role="region" aria-label="Current sprint issues table, scroll horizontally" tabIndex={0}>
+        <table className="data-table" aria-label="Current sprint issues">
           <thead>
             <tr>
               <th>Ticket</th>
@@ -103,6 +105,7 @@ export function CurrentWorkTable({ rows, estimatedHistory = false }: { rows: Cur
             ))}
           </tbody>
         </table>
+        </div>
       )}
     </div>
   );

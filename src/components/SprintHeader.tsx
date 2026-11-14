@@ -20,7 +20,7 @@ export function SprintHeader({ sprint, status, daysElapsed, daysRemaining }: Spr
     <div className="card sprint-header">
       <div className="sprint-header__identity">
         <div className="sprint-header__top-row">
-          <div className="sprint-header__name">{sprint.name}</div>
+          <h1 className="sprint-header__name">{sprint.name}</h1>
           <span className={`status-pill status-pill--${status.level}`}>
             <span className="status-pill__icon" aria-hidden="true">
               {STATUS_ICON[status.level]}

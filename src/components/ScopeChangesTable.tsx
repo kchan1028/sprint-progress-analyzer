@@ -20,6 +20,7 @@ export function ScopeChangesTable({ changes, historyAvailable = true }: { change
           <button
             key={option}
             type="button"
+            aria-pressed={filter === option}
             className={`filter-button ${filter === option ? 'filter-button--active' : ''}`}
             onClick={() => setFilter(option)}
           >
@@ -31,7 +32,8 @@ export function ScopeChangesTable({ changes, historyAvailable = true }: { change
       {visible.length === 0 ? (
         <div className="signals-empty">No scope changes to show.</div>
       ) : (
-        <table className="data-table">
+        <div className="table-scroll" role="region" aria-label="Sprint scope changes table, scroll horizontally" tabIndex={0}>
+        <table className="data-table" aria-label="Sprint scope changes">
           <thead>
             <tr>
               <th>Ticket</th>
@@ -57,6 +59,7 @@ export function ScopeChangesTable({ changes, historyAvailable = true }: { change
             ))}
           </tbody>
         </table>
+        </div>
       )}
     </div>
   );
