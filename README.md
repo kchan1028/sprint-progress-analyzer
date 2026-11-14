@@ -15,6 +15,8 @@ For a reproducible import, select [examples/sprint.csv](examples/sprint.csv), se
 
 No hosted demo or screenshot is included yet. Local test and build verification is described below.
 
+For a plain-English walkthrough, read [Reading your sprint dashboard](docs/user-guide.md): importing a file, understanding the numbers, and turning risk signals into team conversations.
+
 ## Demo at a glance
 
 The built-in synthetic sprint starts with **80 story points** of commitment. Adding 17 and removing 3 brings current scope to **94 points**: 53 completed and 41 remaining.
