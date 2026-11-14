@@ -101,6 +101,8 @@ flowchart LR
 
 ## Engineering decisions and tradeoffs
 
+Each decision below has a full record with alternatives, risks and when to revisit it in the [decision index](docs/decisions/README.md).
+
 - **Start with CSV:** useful without credentials, OAuth, or a server. The cost is incomplete historical data and manual exports. Filter the Jira export to the intended sprint before importing; the parser does not select a sprint from a multi-sprint export.
 - **Keep risk explainable:** individual signals expose the facts and threshold rationale. The headline status reflects the worst signal severity; it is a heuristic, not a delivery forecast or productivity score.
 - **Separate calculations from rendering:** pure functions make scope accounting and edge cases directly testable. A service interface separates reads from the UI, but live Jira integration would still require authentication, pagination, historical-data handling, and changes to the CSV-specific import flow.
