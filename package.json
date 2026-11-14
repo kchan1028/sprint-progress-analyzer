@@ -13,7 +13,8 @@
     "test:e2e": "playwright test",
     "benchmark": "node --import tsx scripts/benchmark.ts",
     "build:demo": "node scripts/build-demo.mjs",
-    "benchmark:browser": "node --import tsx scripts/benchmark-browser.ts"
+    "benchmark:browser": "node --import tsx scripts/benchmark-browser.ts",
+    "record:demo": "node scripts/record-demo.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",

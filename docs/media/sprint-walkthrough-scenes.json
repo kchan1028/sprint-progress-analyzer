@@ -1,0 +1,44 @@
+{
+  "durationSeconds": 69.02,
+  "syntheticDataOnly": true,
+  "silent": true,
+  "captionOffsetSeconds": 0,
+  "scenes": [
+    {
+      "startSeconds": 0,
+      "text": "A short walkthrough of the real app. All tickets and people shown are fictional."
+    },
+    {
+      "startSeconds": 5.01,
+      "text": "Start with progress: 53 points completed, 41 remaining, and scope that changed."
+    },
+    {
+      "startSeconds": 13.01,
+      "text": "Risk signals explain what deserves a conversation with the team."
+    },
+    {
+      "startSeconds": 21.01,
+      "text": "Filter to blocked work to find the tickets behind the warning."
+    },
+    {
+      "startSeconds": 28.01,
+      "text": "Import a sprint CSV locally. This example file contains only synthetic tickets."
+    },
+    {
+      "startSeconds": 38.01,
+      "text": "A CSV has no scope history. Unavailable means unknown, rather than zero changes."
+    },
+    {
+      "startSeconds": 46.01,
+      "text": "Correct unfamiliar statuses. Here, Discovery should count as In Progress."
+    },
+    {
+      "startSeconds": 54.02,
+      "text": "Check the result: the imported ticket now appears as In Progress."
+    },
+    {
+      "startSeconds": 62.02,
+      "text": "Reset to the demo. Use the signals to guide discussion, not to predict a finish date."
+    }
+  ]
+}
