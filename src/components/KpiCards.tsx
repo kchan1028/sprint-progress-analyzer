@@ -13,15 +13,15 @@ export interface KpiValues {
 
 interface KpiCardSpec {
   label: string;
-  value: number;
+  value: number | null;
   context: string;
   tone?: KpiTone;
 }
 
 /** Presentational only - all figures are computed upstream by the calculation layer. */
-export function KpiCards({ values }: { values: KpiValues }) {
+export function KpiCards({ values, historyAvailable = true }: { values: KpiValues; historyAvailable?: boolean }) {
   const cards: KpiCardSpec[] = [
-    { label: 'Original Commitment', value: values.originalCommitment, context: 'story points at sprint start' },
+    { label: 'Original Commitment', value: historyAvailable ? values.originalCommitment : null, context: historyAvailable ? 'story points at sprint start' : 'CSV has no sprint-start history' },
     { label: 'Current Scope', value: values.currentScope, context: 'story points now in sprint' },
     { label: 'Completed', value: values.completed, context: 'story points done' },
     { label: 'Remaining', value: values.remaining, context: 'story points left' },
@@ -34,14 +34,14 @@ export function KpiCards({ values }: { values: KpiValues }) {
     },
     {
       label: 'Scope Added',
-      value: values.scopeAdded,
-      context: 'story points added mid-sprint',
+      value: historyAvailable ? values.scopeAdded : null,
+      context: historyAvailable ? 'story points added mid-sprint' : 'CSV has no scope-change history',
       tone: values.scopeAdded > 0 ? 'warning' : 'default',
     },
     {
       label: 'Scope Removed',
-      value: values.scopeRemoved,
-      context: 'story points pulled out',
+      value: historyAvailable ? values.scopeRemoved : null,
+      context: historyAvailable ? 'story points pulled out' : 'CSV has no scope-change history',
       tone: values.scopeRemoved > 0 ? 'warning' : 'default',
     },
   ];

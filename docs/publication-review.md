@@ -10,3 +10,7 @@ Reviewed November 13, 2026.
 - Checks: 54 tests, lint, clean lockfile installation, and TypeScript/production build. Compatible dependency advisory fixes were applied before the final checks. No browser screenshot or end-to-end verification is claimed.
 
 This is a focused source review, not a guarantee that all vulnerabilities or future data-handling risks have been eliminated.
+
+## Portfolio validation update
+
+The dashboard now carries explicit demo/CSV provenance. Imported scope history is shown as unavailable, and inferred dates are labeled as estimates. A local screenshot of synthetic demo data is included in the README; no imported work data or browser chrome is published. CI configuration adds read-only checks for tests, lint, and build. The original publication checks above describe the initial preparation, not a new comprehensive security audit.

@@ -46,6 +46,7 @@ export const mockSprint: Sprint = {
   startDate: offset(SPRINT_START_OFFSET),
   endDate: offset(SPRINT_END_OFFSET),
   state: 'active',
+  source: 'demo',
 };
 
 export const mockIssues: Issue[] = [

@@ -65,6 +65,8 @@ export interface Issue {
 }
 
 export interface Sprint {
+  /** Provenance determines which historical metrics the dashboard can support. */
+  source: 'demo' | 'csv';
   id: string;
   name: string;
   goal?: string;

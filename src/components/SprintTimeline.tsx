@@ -5,7 +5,7 @@ import { formatShortDate } from '../utils/date';
 interface SprintTimelineProps {
   sprint: Sprint;
   now: Date;
-  originalCommitment: number;
+  originalCommitment: number | null;
   currentScope: number;
   completedPoints: number;
   scopeChanges: ScopeChangeEntry[];
@@ -67,7 +67,7 @@ export function SprintTimeline({
             key={`done-${event.issue.id}`}
             className="timeline__event timeline__event--completed"
             style={{ left: `${percentOf(event.date, sprint)}%` }}
-            title={`${event.issue.key} completed ${formatShortDate(event.date)}`}
+            title={`${event.issue.key} ${sprint.source === 'csv' ? 'estimated completion' : 'completed'} ${formatShortDate(event.date)}`}
           />
         ))}
       </div>
@@ -83,14 +83,14 @@ export function SprintTimeline({
         </span>
         <span className="timeline__legend-item">
           <span className="timeline__legend-dot" style={{ background: 'var(--color-success)' }} />
-          Completed
+          {sprint.source === 'csv' ? 'Completed (estimated dates)' : 'Completed'}
         </span>
       </div>
 
       <div className="timeline__summary">
         <div className="stat" style={{ textAlign: 'left' }}>
           <div className="stat__label">Original</div>
-          <div className="stat__value">{originalCommitment} SP</div>
+          <div className="stat__value">{originalCommitment === null ? 'Unavailable' : `${originalCommitment} SP`}</div>
         </div>
         <div className="stat" style={{ textAlign: 'left' }}>
           <div className="stat__label">Current</div>

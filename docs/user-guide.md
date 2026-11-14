@@ -67,7 +67,7 @@ The workflow panel groups work into delivery stages such as Code Review and Test
 
 A normal Jira CSV is a snapshot: it tells you where a ticket is now, but not every step it took to get there. The app treats imported tickets as if they all belonged to the sprint at the start. It uses the **Updated** date as an approximation for when the current status began.
 
-That means an imported sprint showing no scope changes does not prove that scope stayed stable. A ticket updated yesterday may have been in progress for a week. Completion dates and the timeline are approximate too. Use those views as prompts for discussion, and check Jira before making a delivery decision that depends on history.
+The dashboard labels original commitment and scope changes as **Unavailable** for CSV imports, because the export cannot establish them. Days in status and completion dates are labeled as estimates. A ticket updated yesterday may have been in progress for a week. Completion dates and the timeline are approximate too. Use those views as prompts for discussion, and check Jira before making a delivery decision that depends on history.
 
 The built-in demo includes made-up history to demonstrate the scope-change and timeline views. A CSV import cannot reproduce that level of detail.
 

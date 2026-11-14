@@ -100,12 +100,24 @@ export function DashboardPage({ defaultImportOpen = false, pageTitle }: Dashboar
     );
   }
 
-  const signals = getSprintSignals(sprint, issues, now);
+  const historyAvailable = sprint.source === 'demo';
+  const signals = getSprintSignals(sprint, issues, now).map((signal) =>
+    !historyAvailable && signal.id === 'aging-in-progress'
+      ? { ...signal, message: `Estimated aging: ${signal.message}` }
+      : signal,
+  );
   const overallStatus = getOverallSprintStatus(signals);
 
   return (
     <div>
       <ImportPanel defaultOpen={defaultImportOpen} />
+
+      <section className="card data-confidence" aria-labelledby="data-confidence-heading">
+        <h2 id="data-confidence-heading">{historyAvailable ? 'Fictional demo data' : 'CSV snapshot · limited history'}</h2>
+        <p>{historyAvailable
+          ? 'Explore a synthetic sprint with sample scope and status history. No real people or tickets are shown.'
+          : 'Current status and point totals come from your export. Original commitment and scope changes are unavailable. Aging and completion dates are estimates based on Updated, which may reflect any ticket edit.'}</p>
+      </section>
 
       {/* 1. Sprint identity + timeline dates, 2. overall health at a glance */}
       <SprintHeader
@@ -118,6 +130,7 @@ export function DashboardPage({ defaultImportOpen = false, pageTitle }: Dashboar
       {/* 3. Key KPI metrics */}
       <div className="section">
         <KpiCards
+          historyAvailable={historyAvailable}
           values={{
             originalCommitment: getOriginalCommitment(issues),
             currentScope: getCurrentScope(issues),
@@ -135,6 +148,7 @@ export function DashboardPage({ defaultImportOpen = false, pageTitle }: Dashboar
       <div className="section">
         <h2 className="section__heading">Progress</h2>
         <ProgressSection
+          historyAvailable={historyAvailable}
           commitmentProgress={getCommitmentProgress(issues)}
           currentScopeProgress={getCurrentScopeProgress(issues)}
           scopeChangePercent={getScopeChangePercent(issues)}
@@ -162,7 +176,7 @@ export function DashboardPage({ defaultImportOpen = false, pageTitle }: Dashboar
         <p className="section__subheading">
           Sorted by risk: blocked, then in progress, in review, to do, done.
         </p>
-        <CurrentWorkTable rows={workRows} />
+        <CurrentWorkTable rows={workRows} estimatedHistory={!historyAvailable} />
       </div>
 
       {/* 7. Supporting details */}
@@ -173,7 +187,7 @@ export function DashboardPage({ defaultImportOpen = false, pageTitle }: Dashboar
         <SprintTimeline
           sprint={sprint}
           now={now}
-          originalCommitment={getOriginalCommitment(issues)}
+          originalCommitment={historyAvailable ? getOriginalCommitment(issues) : null}
           currentScope={getCurrentScope(issues)}
           completedPoints={getCompletedPoints(issues)}
           scopeChanges={getScopeChanges(issues, sprint)}
@@ -181,7 +195,7 @@ export function DashboardPage({ defaultImportOpen = false, pageTitle }: Dashboar
         />
 
         <h3 className="section__subheading-title">Scope Changes</h3>
-        <ScopeChangesTable changes={getScopeChanges(issues, sprint)} />
+        <ScopeChangesTable changes={getScopeChanges(issues, sprint)} historyAvailable={historyAvailable} />
       </div>
 
       {/* Below all dashboard content - never between KPIs, signals, or tables. */}

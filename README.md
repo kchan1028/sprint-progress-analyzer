@@ -15,7 +15,12 @@ Open http://localhost:5173/dashboard for the synthetic demo, or http://localhost
 
 For a reproducible import, select [examples/sprint.csv](examples/sprint.csv), set sprint dates to November 2–16, 2026, and import. Map `Discovery` to your chosen status and re-import. This fixture is synthetic; its dates are fixed, so aging signals depend on when you open it. Reset to demo data to return to the rolling demo.
 
-No hosted demo or screenshot is included yet. Local test and build verification is described below.
+## Dashboard preview
+
+![Dark-theme dashboard with fictional sprint data: 80 points originally committed, 94 in current scope, and 53 completed.](docs/images/dashboard-demo.png)
+
+Captured from the local running app on November 13, 2026, using only the built-in synthetic data. Browser chrome and margins are cropped; the dashboard content is unchanged. Demo dates roll forward when you open the app. No hosted demo is configured.
+
 
 For a plain-English walkthrough, read [Reading your sprint dashboard](docs/user-guide.md): importing a file, understanding the numbers, and turning risk signals into team conversations.
 
@@ -108,7 +113,10 @@ The existing `vercel.json` rewrites SPA routes to `index.html`. Other hosts need
 
 ## Validation
 
-The preparation checks passed: 54 tests across five suites, lint, and a TypeScript/production build. Tests cover calculation edge cases, CSV parsing, workflow grouping, persisted mapping behavior, and import error feedback. They are not browser end-to-end tests. See [docs/publication-review.md](docs/publication-review.md) for the publication review scope.
+[GitHub Actions CI](https://github.com/kchan1028/sprint-progress-analyzer/actions/workflows/ci.yml) runs a clean npm install, tests, lint, and the production build on pull requests and pushes to `main`, using Node.js 22. The workflow uses read-only repository permissions and pinned action commits. Branch protection is not configured by this change.
+
+
+The preparation checks passed: 57 tests across seven suites, lint, and a TypeScript/production build. Tests cover calculation edge cases, CSV parsing, workflow grouping, persisted mapping behavior, import error feedback, and data provenance across imports and resets. They are not browser end-to-end tests. See [docs/publication-review.md](docs/publication-review.md) for the publication review scope.
 
 ## Known limitations and next steps
 
@@ -117,7 +125,7 @@ The preparation checks passed: 54 tests across five suites, lint, and a TypeScri
 - Unknown statuses default to To Do until corrected. Saved mappings apply within the browser origin and can be wrong for another team's workflow.
 - Thresholds are fixed in code, days are calendar days, and there is no capacity model, cross-sprint trend, or prediction.
 - Imports are memory-only, and large-file performance has not been benchmarked. Automated coverage focuses on utilities and import error feedback, with no complete browser regression suite.
-- Next steps: add browser tests for imports and mapping corrections, show explicit provenance/availability on historical metrics, and evaluate changelog-backed data before building forecasts.
+- Next steps: add browser tests for imports and mapping corrections, evaluate changelog-backed data before building forecasts, and benchmark large CSV imports.
 
 ## Security
 
