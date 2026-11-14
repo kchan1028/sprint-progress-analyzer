@@ -69,6 +69,8 @@ The dashboard supports the conversation; it does not change Jira tickets or make
 - [Product case study](docs/product-case-study.md): the problem, scope decisions, tradeoffs, and user research still needed.
 - [Accessibility checks](docs/accessibility.md): covered routes, keyboard behavior, fixes, and verification limits.
 - [Performance measurements](docs/performance.md): reproducible synthetic parser and browser-import results, including a large-import responsiveness limit.
+- [Production readiness](docs/production-readiness.md): status by area (tests, input validation, data protection, deployment, performance) and what would change before relying on it.
+- [Risk register](docs/risk-register.md): misleading metrics, silent input fallbacks, status mapping, large imports and other risks, each with mitigation and next action.
 
 ## Working features
 
