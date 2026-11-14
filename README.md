@@ -15,6 +15,22 @@ For a reproducible import, select [examples/sprint.csv](examples/sprint.csv), se
 
 No hosted demo or screenshot is included yet. Local test and build verification is described below.
 
+## Demo at a glance
+
+The built-in synthetic sprint starts with **80 story points** of commitment. Adding 17 and removing 3 brings current scope to **94 points**: 53 completed and 41 remaining.
+
+```mermaid
+pie showData
+  title Synthetic demo — current scope by status (story points)
+  "Done" : 53
+  "In Progress" : 14
+  "Blocked" : 11
+  "In Review" : 3
+  "To Do" : 13
+```
+
+This is a data visualization of [the demo fixture](src/data/mockData.ts), not a screenshot or forecast. Unestimated issues contribute no points to this chart and are flagged separately in the dashboard. The 11 blocked points and added scope give a reviewer concrete risks to discuss alongside completion progress.
+
 ## Working features
 
 - Commitment, current scope, completed, remaining, in-progress, and blocked story-point totals.
