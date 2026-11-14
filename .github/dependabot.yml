@@ -6,6 +6,10 @@ updates:
     schedule:
       interval: monthly
     open-pull-requests-limit: 3
+    groups:
+      # @vitest/* packages require the exact same vitest version, so they must move together.
+      vitest:
+        patterns: ["vitest", "@vitest/*"]
     ignore:
       # Upgrade TypeScript majors deliberately, not as a routine bump.
       - dependency-name: typescript
