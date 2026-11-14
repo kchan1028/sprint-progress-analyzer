@@ -100,7 +100,7 @@ describe('parseJiraCsv', () => {
   });
 
   it('deduplicates repeated issue keys and warns with a count', () => {
-    const csv = 'Issue key,Summary\nJIRA-1,First\nJIRA-1,Duplicate\nJIRA-2,Other\nJIRA-2,Again';
+    const csv = 'Issue key,Summary,Status\nJIRA-1,First,Done\nJIRA-1,Duplicate,Done\nJIRA-2,Other,Done\nJIRA-2,Again,Done';
     const { issues, warnings } = parseJiraCsv(csv, SPRINT_META);
     expect(issues).toHaveLength(2);
     expect(issues[0].summary).toBe('First');
@@ -110,7 +110,7 @@ describe('parseJiraCsv', () => {
   });
 
   it('warns with a count when story points are not numbers, but not when they are empty', () => {
-    const csv = 'Issue key,Story Points\nJIRA-1,five\nJIRA-2,\nJIRA-3,3\nJIRA-4,?';
+    const csv = 'Issue key,Status,Story Points\nJIRA-1,Done,five\nJIRA-2,Done,\nJIRA-3,Done,3\nJIRA-4,Done,?';
     const { issues, warnings } = parseJiraCsv(csv, SPRINT_META);
     expect(issues.map((issue) => issue.storyPoints)).toEqual([null, null, 3, null]);
     expect(warnings).toEqual(['2 story point values were not a number and were read as unestimated.']);
@@ -118,11 +118,11 @@ describe('parseJiraCsv', () => {
 
   it('warns with counts when Created or Updated dates fall back', () => {
     const csv = [
-      'Issue key,Created,Updated',
-      'JIRA-1,not a date,2026-09-03',
-      'JIRA-2,2026-09-02,',
-      'JIRA-3,2026-09-02,31/31/2026',
-      'JIRA-4,2026-09-02,2026-09-04',
+      'Issue key,Status,Created,Updated',
+      'JIRA-1,Done,not a date,2026-09-03',
+      'JIRA-2,Done,2026-09-02,',
+      'JIRA-3,Done,2026-09-02,31/31/2026',
+      'JIRA-4,Done,2026-09-02,2026-09-04',
     ].join('\n');
     const { issues, warnings } = parseJiraCsv(csv, SPRINT_META);
     expect(issues[0].createdAt).toBe(SPRINT_META.startDate);
