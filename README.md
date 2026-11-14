@@ -4,6 +4,8 @@ A local-first Jira sprint dashboard for engineering managers, delivery leads, an
 
 ## Try it
 
+For prerequisites, step-by-step instructions, and troubleshooting, see [setup.md](setup.md).
+
 ```bash
 npm ci
 npm run dev
