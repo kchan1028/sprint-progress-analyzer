@@ -38,7 +38,7 @@ function matchesFilter(row: CurrentWorkRow, filter: Filter): boolean {
 }
 
 /** Presentational aside from the filter toolbar: highlighting is driven entirely by flags computed upstream. */
-export function CurrentWorkTable({ rows }: { rows: CurrentWorkRow[] }) {
+export function CurrentWorkTable({ rows, estimatedHistory = false }: { rows: CurrentWorkRow[]; estimatedHistory?: boolean }) {
   const [filter, setFilter] = useState<Filter>('all');
 
   if (rows.length === 0) {
@@ -73,7 +73,7 @@ export function CurrentWorkTable({ rows }: { rows: CurrentWorkRow[] }) {
               <th>Assignee</th>
               <th>Status</th>
               <th>Story Points</th>
-              <th>Days In Status</th>
+              <th>{estimatedHistory ? 'Days In Status (estimated)' : 'Days In Status'}</th>
               <th>Last Updated</th>
             </tr>
           </thead>

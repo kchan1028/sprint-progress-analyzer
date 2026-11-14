@@ -1743,3 +1743,24 @@ select {
   padding: 0;
   margin-top: 0;
 }
+
+/* Data provenance stays visible beside the metrics it qualifies. */
+.data-confidence {
+  margin-bottom: var(--space-6);
+  padding: var(--space-4) var(--space-5);
+}
+.data-confidence h2 {
+  font-size: 1rem;
+  margin: 0 0 var(--space-2);
+}
+.data-confidence p {
+  max-width: 75ch;
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+.kpi-card__value--unavailable,
+.progress-metric__value--unavailable {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+}

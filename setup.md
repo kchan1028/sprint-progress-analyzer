@@ -93,7 +93,7 @@ npm run lint
 npm run build
 ```
 
-Tests check calculations, CSV parsing, workflow grouping, status mappings, and import error feedback. Lint checks source code, and the build runs TypeScript checks before creating the production files in `dist/`.
+Tests check calculations, CSV parsing, workflow grouping, status mappings, import error feedback, and demo/CSV provenance. GitHub Actions runs the same checks on pull requests and pushes to main. Lint checks source code, and the build runs TypeScript checks before creating the production files in `dist/`.
 
 To inspect that build locally:
 

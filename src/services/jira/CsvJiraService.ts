@@ -45,6 +45,7 @@ export class CsvJiraService implements JiraService {
         startDate: sprintMeta.startDate,
         endDate: sprintMeta.endDate,
         state: 'active',
+        source: 'csv',
       };
       this.issues = issues;
       this.listeners.forEach((listener) => listener());

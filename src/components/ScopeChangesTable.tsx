@@ -4,10 +4,14 @@ import { formatShortDate } from '../utils/date';
 
 type Filter = 'all' | 'added' | 'removed';
 
-export function ScopeChangesTable({ changes }: { changes: ScopeChangeEntry[] }) {
+export function ScopeChangesTable({ changes, historyAvailable = true }: { changes: ScopeChangeEntry[]; historyAvailable?: boolean }) {
   const [filter, setFilter] = useState<Filter>('all');
 
   const visible = changes.filter((change) => filter === 'all' || change.type === filter);
+
+  if (!historyAvailable) {
+    return <div className="card signals-empty">Scope history unavailable. A CSV snapshot cannot show which tickets were added or removed during the sprint.</div>;
+  }
 
   return (
     <div className="card">

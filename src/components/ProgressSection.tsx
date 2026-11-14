@@ -9,20 +9,21 @@ interface ProgressMetricProps {
   formula: string;
   barValue?: number | null;
   emphasizePositive?: boolean;
+  unavailable?: boolean;
 }
 
-function ProgressMetric({ label, value, formula, barValue, emphasizePositive }: ProgressMetricProps) {
+function ProgressMetric({ label, value, formula, barValue, emphasizePositive, unavailable }: ProgressMetricProps) {
   const showPositive = emphasizePositive && value !== null && value > 0;
   return (
     <div className="card">
       <div className="progress-metric__header">
         <span className="progress-metric__label">{label}</span>
-        <span className={`progress-metric__value ${showPositive ? 'progress-metric__value--positive' : ''}`}>
+        <span className={`progress-metric__value ${showPositive ? 'progress-metric__value--positive' : ''} ${unavailable ? 'progress-metric__value--unavailable' : ''}`}>
           {value !== null && value > 0 && emphasizePositive ? '+' : ''}
-          {formatPercent(value)}
+          {unavailable ? 'Unavailable' : formatPercent(value)}
         </span>
       </div>
-      {barValue !== undefined && (
+      {!unavailable && barValue !== undefined && (
         <div className="progress-bar">
           <div
             className="progress-bar__fill"
@@ -39,20 +40,23 @@ interface ProgressSectionProps {
   commitmentProgress: number | null;
   currentScopeProgress: number | null;
   scopeChangePercent: number | null;
+  historyAvailable?: boolean;
 }
 
 export function ProgressSection({
   commitmentProgress,
   currentScopeProgress,
   scopeChangePercent,
+  historyAvailable = true,
 }: ProgressSectionProps) {
   return (
     <div className="progress-grid">
       <ProgressMetric
         label="Commitment Progress"
+        unavailable={!historyAvailable}
         value={commitmentProgress}
         barValue={commitmentProgress}
-        formula="completed SP / original committed SP"
+        formula={historyAvailable ? 'completed SP / original committed SP' : 'Original commitment is absent from CSV exports'}
       />
       <ProgressMetric
         label="Current Scope Progress"
@@ -62,9 +66,10 @@ export function ProgressSection({
       />
       <ProgressMetric
         label="Scope Change"
+        unavailable={!historyAvailable}
         value={scopeChangePercent}
         emphasizePositive
-        formula="(current scope − original commitment) / original commitment"
+        formula={historyAvailable ? '(current scope − original commitment) / original commitment' : 'Scope history is absent from CSV exports'}
       />
     </div>
   );
