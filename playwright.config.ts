@@ -14,6 +14,8 @@ export default defineConfig({
   projects: [
     { name: 'desktop-chromium', use: { ...devices['Desktop Chrome'] } },
     { name: 'mobile-chromium', use: { ...devices['Pixel 5'] } },
+    { name: 'desktop-firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: 'desktop-webkit', use: { ...devices['Desktop Safari'] } },
   ],
   webServer: {
     command: 'npm run build:demo && npm run preview -- --host 127.0.0.1 --port 4175 --strictPort',
