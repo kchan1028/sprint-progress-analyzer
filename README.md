@@ -15,6 +15,12 @@ Open http://localhost:5173/dashboard for the synthetic demo, or http://localhost
 
 For a reproducible import, select [examples/sprint.csv](examples/sprint.csv), set sprint dates to November 2–16, 2026, and import. Map `Discovery` to your chosen status and re-import. This fixture is synthetic; its dates are fixed, so aging signals depend on when you open it. Reset to demo data to return to the rolling demo.
 
+## Short product walkthrough
+
+[![Watch the captioned product walkthrough](docs/media/sprint-walkthrough-poster.jpg)](docs/media/sprint-walkthrough.mp4)
+
+[Watch or download the approximately 70-second MP4](docs/media/sprint-walkthrough.mp4). The silent, captioned recording shows the real local app with synthetic data: progress, blocked work, CSV import, status correction, unavailable history, and reset. [Read the transcript or regenerate the recording](docs/demo-walkthrough.md).
+
 ## Dashboard preview
 
 ![Dark-theme dashboard with fictional sprint data: 80 points originally committed, 94 in current scope, and 53 completed.](docs/images/dashboard-demo.png)
@@ -59,6 +65,7 @@ The dashboard supports the conversation; it does not change Jira tickets or make
 
 ## Product and engineering evidence
 
+- [First user-feedback sessions](docs/user-feedback.md): an invitation, observation tasks, and a blank session worksheet; no feedback is claimed yet.
 - [Product case study](docs/product-case-study.md): the problem, scope decisions, tradeoffs, and user research still needed.
 - [Accessibility checks](docs/accessibility.md): covered routes, keyboard behavior, fixes, and verification limits.
 - [Performance measurements](docs/performance.md): reproducible synthetic parser and browser-import results, including a large-import responsiveness limit.
