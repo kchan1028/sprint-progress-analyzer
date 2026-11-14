@@ -44,7 +44,7 @@ Material risks, with impact, likelihood and next actions, are in the [risk regis
 | Performance | Partial | Parser: 10,000 rows in a median 29 ms; browser import of 5,000 rows completes in about 1.4 s with an 800 ms frame gap ([performance](performance.md)) | One machine, no CPU throttling. Imports over 1,000 rows ask first, but after confirming all rows and timeline markers render, so large imports stall |
 | Cost | Not applicable | Static hosting; no per-user processing cost | |
 | Product validation | Planned | A feedback worksheet exists ([user feedback](user-feedback.md)) | No user sessions held yet. Usefulness is a hypothesis |
-| Licensing | Partial | Dependency licences are their own | No project licence selected |
+| Licensing | Implemented | MIT licence in [LICENSE](../LICENSE); dependency licences are their own | No automated dependency licence check |
 
 ## Known limitations
 
