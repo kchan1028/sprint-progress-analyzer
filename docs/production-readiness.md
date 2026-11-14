@@ -25,7 +25,7 @@ Material risks, with impact, likelihood and next actions, are in the [risk regis
 | Area | Status | Evidence | Gaps and limits |
 |---|---|---|---|
 | Unit and component tests | Verified | Vitest with jsdom covers calculations, CSV parsing, workflow grouping, saved mappings, import errors and data provenance; runs in CI | |
-| Browser and accessibility tests | Verified | Playwright covers the import, mapping and reset journey, invalid imports, keyboard paths and axe scans at desktop and phone widths ([accessibility](accessibility.md)) | Chromium only. Passing axe is not a WCAG conformance claim |
+| Browser and accessibility tests | Verified | Playwright covers the import, mapping and reset journey, invalid imports, keyboard paths and axe scans in Chromium at desktop and phone widths, and in Firefox and WebKit at desktop width ([accessibility](accessibility.md)) | Firefox skips the axe scan after a re-import because the page crashes there in CI (R10). No screen-reader testing. Passing axe is not a WCAG conformance claim |
 | CI | Verified | [ci.yml](../.github/workflows/ci.yml): clean install, unit tests, lint, type check and build, Playwright; read-only token, pinned actions, no secrets | Both jobs (`Tests, lint, and build`, `Dependency review`) are required status checks on `main` through the default-branch ruleset. PR branches don't have to be up to date with `main` before merging |
 | Dependencies | Verified | Three runtime dependencies (React, React DOM, React Router); lockfile; dependency review blocks high and critical advisories on PRs; monthly Dependabot | Major-version Dependabot PRs (jsdom, Vitest UI) are open and unreviewed |
 | Authentication and authorization | Not applicable | No backend and no shared data; each browser holds its own import | A hosted copy is as open as its host makes it |
@@ -60,5 +60,5 @@ From the README and confirmed in the code:
 
 1. Hold the planned user sessions and act on what they show.
 2. Add security headers, including a Content Security Policy, on the host.
-3. Test in Firefox and WebKit, and with a screen reader.
+3. Test with a screen reader, and find the cause of the Firefox crash in the post-import axe scan.
 4. Evaluate changelog-backed data before adding any forecast.

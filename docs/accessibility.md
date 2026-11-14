@@ -5,6 +5,7 @@ Reviewed November 13, 2026. The checks are reproducible in `e2e/sprint.spec.ts` 
 ## Coverage
 
 - Chromium at desktop and Pixel 5 emulated phone dimensions; phone emulation is not a test on physical Android hardware.
+- Firefox and WebKit at desktop dimensions (added 2026-11-14). Every check runs in both, except the axe scan after a re-import in Firefox, which is skipped because headless Firefox in CI crashes the page during that scan ([risk register](risk-register.md), R10).
 - Homepage, demo dashboard, and open import form, in both light and dark themes.
 - Imported CSV after correcting a status mapping.
 - Keyboard skip link into dashboard content, activating a filter with Enter, and selected filter state through `aria-pressed`.
