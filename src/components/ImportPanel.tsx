@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { csvJiraService } from '../services/jira';
 import type { IssueStatus } from '../types/jira';
-import { parseCsv } from '../utils/parseJiraCsv';
+import { parseCsv, type AppliedStatusMapping } from '../utils/parseJiraCsv';
 import { LARGE_IMPORT_ROW_WARNING } from '../utils/thresholds';
 import {
   forgetStatusMapping,
@@ -48,6 +48,7 @@ export function ImportPanel({ defaultOpen = false }: { defaultOpen?: boolean }) 
   const [csvText, setCsvText] = useState<string | null>(null);
   const [warnings, setWarnings] = useState<string[] | null>(null);
   const [unknownStatuses, setUnknownStatuses] = useState<string[]>([]);
+  const [appliedMappings, setAppliedMappings] = useState<AppliedStatusMapping[]>([]);
   const [statusMap, setStatusMap] = useState<Record<string, IssueStatus>>({});
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -61,6 +62,7 @@ export function ImportPanel({ defaultOpen = false }: { defaultOpen?: boolean }) 
     setCsvText(null);
     setWarnings(null);
     setUnknownStatuses([]);
+    setAppliedMappings([]);
     setStatusMap({});
     setStatus('idle');
     setPendingLargeRows(null);
@@ -86,9 +88,10 @@ export function ImportPanel({ defaultOpen = false }: { defaultOpen?: boolean }) 
     );
   }
 
-  function applyImportResult(parseWarnings: string[], unmapped: string[]) {
+  function applyImportResult(parseWarnings: string[], unmapped: string[], applied: AppliedStatusMapping[]) {
     setWarnings(parseWarnings);
     setUnknownStatuses(unmapped);
+    setAppliedMappings(applied);
     const failed = parseWarnings.some((w) =>
       w.startsWith('No issues') || w.startsWith('CSV file is empty') || w.startsWith('Could not find'),
     );
@@ -114,6 +117,7 @@ export function ImportPanel({ defaultOpen = false }: { defaultOpen?: boolean }) 
       if (dataRows > LARGE_IMPORT_ROW_WARNING) {
         setWarnings(null);
         setUnknownStatuses([]);
+        setAppliedMappings([]);
         setStatus('idle');
         setPendingLargeRows(dataRows);
         return;
@@ -143,7 +147,7 @@ export function ImportPanel({ defaultOpen = false }: { defaultOpen?: boolean }) 
         setSavedMappings(updated);
       }
 
-      applyImportResult(result.warnings, result.unknownStatuses);
+      applyImportResult(result.warnings, result.unknownStatuses, result.appliedMappings);
     } catch (err) {
       setErrorMessage(err instanceof Error ? err.message : 'Failed to read file.');
       setStatus('error');
@@ -168,7 +172,7 @@ export function ImportPanel({ defaultOpen = false }: { defaultOpen?: boolean }) 
 
     const result = runImport(csvText, toCustomStatusMap(updated));
     if (!result) return;
-    applyImportResult(result.warnings, result.unknownStatuses);
+    applyImportResult(result.warnings, result.unknownStatuses, result.appliedMappings);
   }
 
   function handleReset() {
@@ -177,6 +181,7 @@ export function ImportPanel({ defaultOpen = false }: { defaultOpen?: boolean }) 
     setCsvText(null);
     setWarnings(null);
     setUnknownStatuses([]);
+    setAppliedMappings([]);
     setStatusMap({});
     setStatus('idle');
     setPendingLargeRows(null);
@@ -293,6 +298,26 @@ export function ImportPanel({ defaultOpen = false }: { defaultOpen?: boolean }) 
               <li key={w}>{w}</li>
             ))}
           </ul>
+        )}
+
+        {status === 'success' && appliedMappings.length > 0 && (
+          <div className="import-panel__status-map">
+            <p className="section__subheading">
+              Saved status mappings from this browser were applied to this import. Check they fit this team's
+              workflow:
+            </p>
+            <ul className="import-panel__warnings" aria-label="Saved mappings applied">
+              {appliedMappings.map((mapping) => (
+                <li key={mapping.rawStatus}>
+                  "{mapping.rawStatus}" counted as {mapping.status} ({mapping.issueCount}{' '}
+                  {mapping.issueCount === 1 ? 'issue' : 'issues'})
+                </li>
+              ))}
+            </ul>
+            <button type="button" className="filter-button" onClick={() => setShowSavedMappings(true)}>
+              Edit saved mappings
+            </button>
+          </div>
         )}
 
         {unknownStatuses.length > 0 && (

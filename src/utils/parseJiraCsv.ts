@@ -49,6 +49,15 @@ export interface ParsedCsvResult {
   warnings: string[];
   /** Distinct raw status strings from the CSV that weren't recognized (defaulted to "To Do"). */
   unknownStatuses: string[];
+  /** Caller-supplied (saved) status mappings that this file actually used, with how many issues each covered. */
+  appliedMappings: AppliedStatusMapping[];
+}
+
+export interface AppliedStatusMapping {
+  /** The raw status text as it appears in this file. */
+  rawStatus: string;
+  status: IssueStatus;
+  issueCount: number;
 }
 
 export interface ImportSprintMeta {
@@ -120,9 +129,17 @@ function mapStatus(
   raw: string,
   customStatusMap: Record<string, IssueStatus>,
   unknownStatuses: Map<string, string>,
+  appliedMappings: Map<string, AppliedStatusMapping>,
 ): IssueStatus {
   const key = raw.trim().toLowerCase();
-  const mapped = customStatusMap[key] ?? STATUS_ALIASES[key];
+  const custom = customStatusMap[key];
+  if (custom) {
+    const applied = appliedMappings.get(key);
+    if (applied) applied.issueCount++;
+    else appliedMappings.set(key, { rawStatus: raw.trim(), status: custom, issueCount: 1 });
+    return custom;
+  }
+  const mapped = STATUS_ALIASES[key];
   if (mapped) return mapped;
   if (!unknownStatuses.has(key)) {
     unknownStatuses.set(key, raw.trim());
@@ -167,7 +184,7 @@ export function parseJiraCsv(
   );
 
   if (rows.length === 0) {
-    return { issues: [], warnings: ['CSV file is empty.'], unknownStatuses: [] };
+    return { issues: [], warnings: ['CSV file is empty.'], unknownStatuses: [], appliedMappings: [] };
   }
 
   const [headerRow, ...dataRows] = rows;
@@ -180,6 +197,7 @@ export function parseJiraCsv(
       issues: [],
       warnings: ['Could not find an "Issue key" column - is this a Jira issue export CSV?'],
       unknownStatuses: [],
+      appliedMappings: [],
     };
   }
   if (columns.status === -1) {
@@ -187,6 +205,7 @@ export function parseJiraCsv(
   }
 
   const unknownStatuses = new Map<string, string>();
+  const appliedMappings = new Map<string, AppliedStatusMapping>();
   const seenKeys = new Set<string>();
   let duplicateRows = 0;
   let invalidStoryPoints = 0;
@@ -209,7 +228,7 @@ export function parseJiraCsv(
       const id = columns.id !== -1 ? row[columns.id]?.trim() || key : key;
       const rawStatus = columns.status !== -1 ? row[columns.status]?.trim() || undefined : undefined;
       const status = columns.status !== -1
-        ? mapStatus(row[columns.status] ?? '', normalizedCustomStatusMap, unknownStatuses)
+        ? mapStatus(row[columns.status] ?? '', normalizedCustomStatusMap, unknownStatuses, appliedMappings)
         : 'To Do';
       let createdAt = sprintMeta.startDate;
       if (columns.created !== -1) {
@@ -281,5 +300,10 @@ export function parseJiraCsv(
     warnings.push('No issues were imported.');
   }
 
-  return { issues, warnings, unknownStatuses: Array.from(unknownStatuses.values()) };
+  return {
+    issues,
+    warnings,
+    unknownStatuses: Array.from(unknownStatuses.values()),
+    appliedMappings: Array.from(appliedMappings.values()).sort((a, b) => a.rawStatus.localeCompare(b.rawStatus)),
+  };
 }

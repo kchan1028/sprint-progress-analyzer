@@ -1,6 +1,6 @@
 import type { Issue, IssueStatus, Sprint, StatusHistoryEntry } from '../../types/jira';
 import { mockIssues, mockSprint } from '../../data/mockData';
-import { parseJiraCsv, type ImportSprintMeta } from '../../utils/parseJiraCsv';
+import { parseJiraCsv, type AppliedStatusMapping, type ImportSprintMeta } from '../../utils/parseJiraCsv';
 import type { JiraService } from './JiraService';
 
 /** Simulates realistic network latency so loading states are exercised. */
@@ -28,14 +28,15 @@ export class CsvJiraService implements JiraService {
    * Parses `csvText` (a Jira issue-navigator CSV export) and replaces the
    * current sprint. `customStatusMap` maps raw Jira status names to this
    * app's IssueStatus, for workflows using status names outside the
-   * built-in defaults (see `unknownStatuses` in the result).
+   * built-in defaults (see `unknownStatuses` in the result). `appliedMappings`
+   * lists the supplied mappings this file actually used.
    */
   loadFromCsv(
     csvText: string,
     sprintMeta: ImportSprintMeta,
     customStatusMap?: Record<string, IssueStatus>,
-  ): { warnings: string[]; unknownStatuses: string[] } {
-    const { issues, warnings, unknownStatuses } = parseJiraCsv(csvText, sprintMeta, customStatusMap);
+  ): { warnings: string[]; unknownStatuses: string[]; appliedMappings: AppliedStatusMapping[] } {
+    const { issues, warnings, unknownStatuses, appliedMappings } = parseJiraCsv(csvText, sprintMeta, customStatusMap);
 
     if (issues.length > 0) {
       this.sprint = {
@@ -51,7 +52,7 @@ export class CsvJiraService implements JiraService {
       this.listeners.forEach((listener) => listener());
     }
 
-    return { warnings, unknownStatuses };
+    return { warnings, unknownStatuses, appliedMappings };
   }
 
   resetToDemoData(): void {
