@@ -1,0 +1,12 @@
+# Update PRs for the npm lockfile and workflow actions. Security updates are also enabled in the repository settings.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 3
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
