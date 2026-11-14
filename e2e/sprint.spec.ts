@@ -85,3 +85,30 @@ for (const theme of ['light', 'dark'] as const) {
     });
   }
 }
+
+test('the app runs under the host Content Security Policy without violations', async ({ page }) => {
+  const violations: string[] = [];
+  await page.exposeFunction('reportCspViolation', (violation: string) => violations.push(violation));
+  await page.addInitScript(() => {
+    document.addEventListener('securitypolicyviolation', (event) => {
+      (window as unknown as { reportCspViolation: (v: string) => void })
+        .reportCspViolation(`${event.violatedDirective} ${event.blockedURI}`);
+    });
+  });
+
+  const response = await page.goto('/');
+  expect(response?.headers()['content-security-policy']).toContain("script-src 'self'");
+  // The inline theme script is allowed by its hash, so it sets data-theme before React loads.
+  await expect(page.locator('html')).toHaveAttribute('data-theme', /^(light|dark)$/);
+
+  await page.goto('/analyze');
+  await page.getByLabel('Start date').fill('2026-11-02');
+  await page.getByLabel('End date').fill('2026-11-16');
+  await page.getByLabel('CSV file').setInputFiles(sample);
+  await page.getByRole('button', { name: 'Import "sprint.csv"', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'CSV snapshot · limited history' })).toBeVisible();
+
+  await page.goto('/dashboard');
+  await expect(page.getByRole('heading', { name: 'Fictional demo data' })).toBeVisible();
+  expect(violations).toEqual([]);
+});
