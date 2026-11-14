@@ -25,6 +25,8 @@ try {
         requestAnimationFrame(tick);
       })()`);
       await page.getByRole('button', { name: 'Import "benchmark.csv"', exact: true }).click();
+      // Files above LARGE_IMPORT_ROW_WARNING (1,000 rows) ask for confirmation first.
+      if (rows > 1000) await page.getByRole('button', { name: 'Import anyway', exact: true }).click();
       await page.getByRole('heading', { name: 'CSV snapshot · limited history' }).waitFor();
       await page.getByRole('table', { name: 'Current sprint issues' }).getByRole('row').last().waitFor();
       await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));

@@ -1,6 +1,6 @@
 # 0005: Import what can be read, and warn about what can't
 
-Written 2026-11-14 from the code on `main`. Label: **Current Design**, with **Proposed** follow-ups marked below.
+Written 2026-11-14 from the code on `main`. Label: **Current Design**. The follow-ups first listed as Proposed were implemented on 2026-11-14 and are now in the table below.
 
 ## Context
 
@@ -33,9 +33,11 @@ What `parseJiraCsv.ts` and `ImportPanel.tsx` do today:
 | No `Status` column | Imports; warning that every issue defaults to To Do |
 | Row without an issue key | Row skipped with a warning naming the row number |
 | Unknown status name | Defaults to To Do; one warning listing the names, and a mapping form whose choices are saved in `localStorage` |
-| Empty or non-numeric story points | Imported as unestimated (`null`) and counted by the unestimated signal |
-| Repeated issue key | Later rows dropped; the first row wins |
-| Unparseable `Created` or `Updated` date | Falls back to the sprint start (for `Created`) or `Created` (for `Updated`) |
+| Empty story points | Imported as unestimated (`null`) and counted by the unestimated signal |
+| Non-numeric story points | Imported as unestimated (`null`); one warning with the count |
+| Repeated issue key | Later rows dropped and the first row wins; one warning with the count of dropped rows |
+| Empty or unparseable `Created` or `Updated` date | Falls back to the sprint start (for `Created`) or `Created` (for `Updated`); one warning per column with the count. No warning when the column is absent |
+| More than 1,000 data rows | Asks before importing: the user picks Import anyway or Cancel. 1,000 rows is the largest measured size whose worst frame gap (117 ms) stayed near 100 ms; 5,000 rows froze the page for 800 ms ([performance](../performance.md)) |
 | Sprint end date not after start date | Import refused with an error |
 | Nothing importable | The previous data stays on screen and an error is shown |
 
@@ -50,22 +52,16 @@ most common reason numbers look wrong.
 ## Consequences
 
 - Most exports import on the first try, and the user sees what was assumed.
-- Some fallbacks are silent today (see below), so a clean-looking import is not proof of a clean file.
+- Every fallback in the table above except empty story points (which have their own signal) now produces a warning, so a clean import means none of them fired. It still doesn't prove the values are right (a date can parse to the wrong day).
 
 ## Risks and limits
 
-- **Silent cases.** Repeated keys, non-numeric story points and unparseable dates produce no warning.
 - **Date parsing** relies on the browser's `Date`; non-ISO formats can parse differently or not at all.
-- **No size limit.** Nothing caps the file size or row count, and 5,000 rows already stall rendering
-  ([performance](../performance.md)).
+- **No hard size limit.** Large files only get a confirmation step; after Import anyway, every row still renders
+  and the page can stall ([performance](../performance.md)).
 - **Saved mappings** apply to every import in that browser, and can be wrong for another team's workflow.
-
-## Proposed follow-ups (not implemented)
-
-- Warn when rows are dropped as duplicates, when story points aren't numbers, and when dates fall back.
-- Warn above a row count where rendering is known to stall, before importing.
 
 ## When to revisit
 
-- When the proposed warnings are implemented, move them into the table above and drop the Proposed label.
+- If real exports routinely pass 1,000 rows, virtualize long tables instead of relying on the confirmation step.
 - If user exports show common formats the header or status aliases miss.

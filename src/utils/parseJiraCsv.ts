@@ -130,16 +130,22 @@ function mapStatus(
   return 'To Do';
 }
 
-function parseDate(raw: string, fallback: string): string {
-  if (!raw || !raw.trim()) return fallback;
+/** Returns the parsed ISO date, or null when the value is empty or unreadable. */
+function parseDate(raw: string | undefined): string | null {
+  if (!raw || !raw.trim()) return null;
   const parsed = new Date(raw);
-  return Number.isNaN(parsed.getTime()) ? fallback : parsed.toISOString();
+  return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
 }
 
-function parseStoryPoints(raw: string | undefined): number | null {
-  if (!raw || !raw.trim()) return null;
+/** `invalid` is true when a non-empty value isn't a number (read as unestimated). */
+function parseStoryPoints(raw: string | undefined): { value: number | null; invalid: boolean } {
+  if (!raw || !raw.trim()) return { value: null, invalid: false };
   const value = Number(raw.trim());
-  return Number.isFinite(value) ? value : null;
+  return Number.isFinite(value) ? { value, invalid: false } : { value: null, invalid: true };
+}
+
+function plural(count: number, singular: string, pluralForm = `${singular}s`): string {
+  return `${count} ${count === 1 ? singular : pluralForm}`;
 }
 
 /**
@@ -182,6 +188,10 @@ export function parseJiraCsv(
 
   const unknownStatuses = new Map<string, string>();
   const seenKeys = new Set<string>();
+  let duplicateRows = 0;
+  let invalidStoryPoints = 0;
+  let createdFallbacks = 0;
+  let updatedFallbacks = 0;
 
   const issues: Issue[] = dataRows
     .map((row, rowIndex): Issue | null => {
@@ -191,6 +201,7 @@ export function parseJiraCsv(
         return null;
       }
       if (seenKeys.has(key)) {
+        duplicateRows++;
         return null;
       }
       seenKeys.add(key);
@@ -200,8 +211,24 @@ export function parseJiraCsv(
       const status = columns.status !== -1
         ? mapStatus(row[columns.status] ?? '', normalizedCustomStatusMap, unknownStatuses)
         : 'To Do';
-      const createdAt = parseDate(columns.created !== -1 ? row[columns.created] : '', sprintMeta.startDate);
-      const updatedAt = parseDate(columns.updated !== -1 ? row[columns.updated] : '', createdAt);
+      let createdAt = sprintMeta.startDate;
+      if (columns.created !== -1) {
+        const parsed = parseDate(row[columns.created]);
+        if (parsed) createdAt = parsed;
+        else createdFallbacks++;
+      }
+      let updatedAt = createdAt;
+      if (columns.updated !== -1) {
+        const parsed = parseDate(row[columns.updated]);
+        if (parsed) updatedAt = parsed;
+        else updatedFallbacks++;
+      }
+      let storyPoints: number | null = null;
+      if (columns.storyPoints !== -1) {
+        const points = parseStoryPoints(row[columns.storyPoints]);
+        storyPoints = points.value;
+        if (points.invalid) invalidStoryPoints++;
+      }
       const assigneeName = columns.assignee !== -1 ? row[columns.assignee]?.trim() : '';
 
       const assignee: Assignee | null = assigneeName
@@ -215,7 +242,7 @@ export function parseJiraCsv(
         assignee,
         status,
         rawStatus,
-        storyPoints: columns.storyPoints !== -1 ? parseStoryPoints(row[columns.storyPoints]) : null,
+        storyPoints,
         createdAt,
         lastUpdatedAt: updatedAt,
         addedToSprintAt: sprintMeta.startDate,
@@ -228,6 +255,26 @@ export function parseJiraCsv(
   if (unknownStatuses.size > 0) {
     warnings.push(
       `${unknownStatuses.size} unrecognized status${unknownStatuses.size === 1 ? '' : 'es'} defaulted to "To Do": ${Array.from(unknownStatuses.values()).join(', ')}.`,
+    );
+  }
+  if (duplicateRows > 0) {
+    warnings.push(
+      `${plural(duplicateRows, 'row')} repeated an issue key already in the file and ${duplicateRows === 1 ? 'was' : 'were'} dropped (the first row for each key was kept).`,
+    );
+  }
+  if (invalidStoryPoints > 0) {
+    warnings.push(
+      `${plural(invalidStoryPoints, 'story point value')} ${invalidStoryPoints === 1 ? 'was' : 'were'} not a number and ${invalidStoryPoints === 1 ? 'was' : 'were'} read as unestimated.`,
+    );
+  }
+  if (createdFallbacks > 0) {
+    warnings.push(
+      `${plural(createdFallbacks, '"Created" date')} ${createdFallbacks === 1 ? 'was' : 'were'} missing or unreadable and fell back to the sprint start date.`,
+    );
+  }
+  if (updatedFallbacks > 0) {
+    warnings.push(
+      `${plural(updatedFallbacks, '"Updated" date')} ${updatedFallbacks === 1 ? 'was' : 'were'} missing or unreadable and fell back to the "Created" date.`,
     );
   }
   if (issues.length === 0) {

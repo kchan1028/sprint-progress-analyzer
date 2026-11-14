@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
 import { csvJiraService } from '../services/jira';
 import type { IssueStatus } from '../types/jira';
+import { parseCsv } from '../utils/parseJiraCsv';
+import { LARGE_IMPORT_ROW_WARNING } from '../utils/thresholds';
 import {
   forgetStatusMapping,
   loadSavedStatusMappings,
@@ -51,6 +53,7 @@ export function ImportPanel({ defaultOpen = false }: { defaultOpen?: boolean }) 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [savedMappings, setSavedMappings] = useState<SavedStatusMappings>(() => loadSavedStatusMappings());
   const [showSavedMappings, setShowSavedMappings] = useState(false);
+  const [pendingLargeRows, setPendingLargeRows] = useState<number | null>(null);
 
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0] ?? null;
@@ -60,6 +63,7 @@ export function ImportPanel({ defaultOpen = false }: { defaultOpen?: boolean }) 
     setUnknownStatuses([]);
     setStatusMap({});
     setStatus('idle');
+    setPendingLargeRows(null);
   }
 
   /** Runs the parse/load against the service. Returns null (after setting an error) if the dates are invalid. */
@@ -105,6 +109,26 @@ export function ImportPanel({ defaultOpen = false }: { defaultOpen?: boolean }) 
       setCsvText(text);
       setStatusMap({});
 
+      // Rendering, not parsing, is what stalls on big files, so ask before swapping them in.
+      const dataRows = Math.max(parseCsv(text).length - 1, 0);
+      if (dataRows > LARGE_IMPORT_ROW_WARNING) {
+        setWarnings(null);
+        setUnknownStatuses([]);
+        setStatus('idle');
+        setPendingLargeRows(dataRows);
+        return;
+      }
+
+      importText(text);
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : 'Failed to read file.');
+      setStatus('error');
+    }
+  }
+
+  function importText(text: string) {
+    setPendingLargeRows(null);
+    try {
       // Only statuses never seen before end up unmapped here - everything previously
       // saved (or built into the app) is applied automatically before results are shown.
       const result = runImport(text, toCustomStatusMap(savedMappings));
@@ -124,6 +148,10 @@ export function ImportPanel({ defaultOpen = false }: { defaultOpen?: boolean }) 
       setErrorMessage(err instanceof Error ? err.message : 'Failed to read file.');
       setStatus('error');
     }
+  }
+
+  function handleConfirmLargeImport() {
+    if (csvText) importText(csvText);
   }
 
   function handleReimportWithMapping() {
@@ -151,6 +179,7 @@ export function ImportPanel({ defaultOpen = false }: { defaultOpen?: boolean }) 
     setUnknownStatuses([]);
     setStatusMap({});
     setStatus('idle');
+    setPendingLargeRows(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
   }
 
@@ -230,6 +259,22 @@ export function ImportPanel({ defaultOpen = false }: { defaultOpen?: boolean }) 
           </button>
         </div>
 
+        {pendingLargeRows !== null && (
+          <div className="signal signal--warning" role="alert">
+            <span className="signal__icon">!</span>
+            <span>
+              This file has {pendingLargeRows.toLocaleString('en-US')} rows. Above{' '}
+              {LARGE_IMPORT_ROW_WARNING.toLocaleString('en-US')} rows the page can freeze for a second or more
+              while it renders, and a file this size is often a whole project rather than one sprint.{' '}
+              <button type="button" className="filter-button" onClick={handleConfirmLargeImport}>
+                Import anyway
+              </button>{' '}
+              <button type="button" className="filter-button" onClick={() => setPendingLargeRows(null)}>
+                Cancel
+              </button>
+            </span>
+          </div>
+        )}
         {status === 'success' && (
           <div className="signal signal--info" role="status">
             <span className="signal__icon">✓</span>

@@ -99,10 +99,42 @@ describe('parseJiraCsv', () => {
     expect(blankKeyRow.issues[0].key).toBe('JIRA-1');
   });
 
-  it('deduplicates repeated issue keys', () => {
-    const csv = 'Issue key,Summary\nJIRA-1,First\nJIRA-1,Duplicate';
-    const { issues } = parseJiraCsv(csv, SPRINT_META);
-    expect(issues).toHaveLength(1);
+  it('deduplicates repeated issue keys and warns with a count', () => {
+    const csv = 'Issue key,Summary\nJIRA-1,First\nJIRA-1,Duplicate\nJIRA-2,Other\nJIRA-2,Again';
+    const { issues, warnings } = parseJiraCsv(csv, SPRINT_META);
+    expect(issues).toHaveLength(2);
     expect(issues[0].summary).toBe('First');
+    expect(warnings).toEqual([
+      '2 rows repeated an issue key already in the file and were dropped (the first row for each key was kept).',
+    ]);
+  });
+
+  it('warns with a count when story points are not numbers, but not when they are empty', () => {
+    const csv = 'Issue key,Story Points\nJIRA-1,five\nJIRA-2,\nJIRA-3,3\nJIRA-4,?';
+    const { issues, warnings } = parseJiraCsv(csv, SPRINT_META);
+    expect(issues.map((issue) => issue.storyPoints)).toEqual([null, null, 3, null]);
+    expect(warnings).toEqual(['2 story point values were not a number and were read as unestimated.']);
+  });
+
+  it('warns with counts when Created or Updated dates fall back', () => {
+    const csv = [
+      'Issue key,Created,Updated',
+      'JIRA-1,not a date,2026-09-03',
+      'JIRA-2,2026-09-02,',
+      'JIRA-3,2026-09-02,31/31/2026',
+      'JIRA-4,2026-09-02,2026-09-04',
+    ].join('\n');
+    const { issues, warnings } = parseJiraCsv(csv, SPRINT_META);
+    expect(issues[0].createdAt).toBe(SPRINT_META.startDate);
+    expect(issues[1].lastUpdatedAt).toBe(new Date('2026-09-02').toISOString());
+    expect(warnings).toEqual([
+      '1 "Created" date was missing or unreadable and fell back to the sprint start date.',
+      '2 "Updated" dates were missing or unreadable and fell back to the "Created" date.',
+    ]);
+  });
+
+  it('does not warn about dates or points when those columns are absent', () => {
+    const { warnings } = parseJiraCsv('Issue key,Status\nJIRA-1,Done', SPRINT_META);
+    expect(warnings).toEqual([]);
   });
 });
