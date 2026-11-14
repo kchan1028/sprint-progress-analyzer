@@ -45,6 +45,20 @@ The app uses fixed rules to draw attention to work. A flag is a reason to check 
 | Unestimated | A current ticket has no usable estimate. | Do we understand enough about this work to plan it? |
 | Remaining work near the end | Points remain with 3 or fewer calendar days left; this becomes critical when no days remain. | What can we finish, split, or explicitly move out? |
 
+The headline follows the most severe signal present:
+
+```mermaid
+flowchart TD
+  Signals[Calculate the sprint signals] --> Critical{Any critical signal?}
+  Critical -->|Yes| Behind[Behind Schedule]
+  Critical -->|No| Warning{Any warning signal?}
+  Warning -->|Yes| Risk[At Risk]
+  Warning -->|No| Track[On Track]
+  Behind --> Explain[Read the individual signals and inspect the tickets]
+  Risk --> Explain
+  Track --> Explain
+```
+
 The headline **At Risk** means at least one warning exists. **Behind Schedule** means a critical signal exists. **On Track** means neither is present. These labels summarize the rules; they do not account for team capacity, holidays, or work happening outside Jira.
 
 The workflow panel groups work into delivery stages such as Code Review and Testing. It can recognize the original Jira status more precisely than the five general statuses used for point calculations. A saved status correction therefore does not always change the workflow panel's stage.

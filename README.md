@@ -35,6 +35,23 @@ pie showData
 
 This is a data visualization of [the demo fixture](src/data/mockData.ts), not a screenshot or forecast. Unestimated issues contribute no points to this chart and are flagged separately in the dashboard. The 11 blocked points and added scope give a reviewer concrete risks to discuss alongside completion progress.
 
+## From sprint data to a team conversation
+
+```mermaid
+flowchart TD
+  Start[Open the app] --> Choice{Choose a data source}
+  Choice --> Demo[Explore the fictional sprint]
+  Choice --> Export[Export one sprint from Jira as CSV]
+  Export --> Import[Enter sprint dates and import in the browser]
+  Import --> Check[Review warnings and correct status mappings]
+  Demo --> Review[Read progress and risk signals]
+  Check --> Review
+  Review --> Tickets[Inspect the tickets behind each signal]
+  Tickets --> Discuss[Agree on follow-up with the team]
+```
+
+The dashboard supports the conversation; it does not change Jira tickets or make delivery commitments for the team. See [the user guide](docs/user-guide.md) for what each signal means.
+
 ## Working features
 
 - Commitment, current scope, completed, remaining, in-progress, and blocked story-point totals.
