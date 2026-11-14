@@ -34,7 +34,7 @@ Material risks, with impact, likelihood and next actions, are in the [risk regis
 | Metric correctness | Partial | Pure functions with edge-case tests (zero denominators, unestimated issues, removed issues) | Correct for the data model, but CSV data lacks history: commitment and scope change are shown as unavailable, aging and completion dates are estimates from `Updated` |
 | Secrets | Verified | No secrets are needed. `.env.example` and SECURITY.md say every `VITE_*` value is public | |
 | Data protection | Partial | CSV is parsed in the browser and held in memory only; only theme and status mappings persist in `localStorage` | Optional Google Analytics sends page URL and title when configured in production. Extensions and same-origin scripts can read the data. Saved status names can reveal workflow details on shared devices |
-| Security headers | Planned | None configured: `vercel.json` only rewrites routes | No Content Security Policy. An inline theme script in `index.html` would need a hash or nonce under a strict CSP |
+| Security headers | Verified | `vercel.json` sends a Content Security Policy (no `unsafe-inline` or `unsafe-eval`; the inline theme script is allowed by hash; Google Analytics origins only), plus `nosniff`, `Referrer-Policy`, `X-Frame-Options: DENY`, `Permissions-Policy` and HSTS. `vite preview` serves the same headers, so every Playwright test runs under the CSP, and one test fails on any CSP violation. `securityHeaders.test.ts` checks the script hash matches `index.html` | Applies only on Vercel; another host needs the same headers configured. Editing the inline theme script means updating its hash (the unit test fails until you do). Not checked against a live deployment |
 | Error handling | Verified | Import errors and warnings shown with alert and status roles; data loading errors caught in `useSprintData`; analytics failures can't break the app; a top-level error boundary replaces a blank page with a recovery screen and Reset to demo data (`ErrorBoundary.test.tsx`) | Render errors are logged to the browser console only, and resetting drops the import |
 | Retries | Not applicable | No network calls in the data path | |
 | Observability | Not applicable | No backend to monitor. Optional analytics counts page views only | No error reporting from users' browsers. Problems surface only when someone reports them |
@@ -59,6 +59,5 @@ From the README and confirmed in the code:
 ## What would change before relying on it for team decisions
 
 1. Hold the planned user sessions and act on what they show.
-2. Add security headers, including a Content Security Policy, on the host.
-3. Test with a screen reader.
-4. Evaluate changelog-backed data before adding any forecast.
+2. Test with a screen reader.
+3. Evaluate changelog-backed data before adding any forecast.
