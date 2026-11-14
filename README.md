@@ -141,7 +141,7 @@ The preparation checks passed: 57 tests across seven suites, lint, and a TypeScr
 - The `Updated` timestamp approximates entry into the current status and completion dates. Edits can make aging/timeline values misleading; Jira date formats also depend on browser parsing. Prefer ISO dates in exports.
 - Unknown statuses default to To Do until corrected. Saved mappings apply within the browser origin and can be wrong for another team's workflow; each import lists the saved mappings it applied.
 - Thresholds are fixed in code, days are calendar days, and there is no capacity model, cross-sprint trend, or prediction.
-- Imports are memory-only, and large browser imports can stall rendering; see the measured limits above. Browser coverage currently uses Chromium, with no physical-device or full assistive-technology review.
+- Imports are memory-only, and large browser imports can stall rendering; see the measured limits above. Browser tests run in Chromium (desktop and emulated phone), Firefox and WebKit (desktop); there is no physical-device or full assistive-technology review.
 - Next steps: validate usefulness with prospective users, evaluate changelog-backed data before building forecasts, and improve rendering for large exports if real usage warrants it.
 
 ## Security
